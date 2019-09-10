@@ -1,0 +1,17 @@
+.idea/
+.metadata/
+.settings/
+target/
+Client/.vscode-test/
+.project
+.classpath
+Client/.vscode/
+Client/vsc-extension-quickstart.md
+src/test/
+Client/node_modules/
+Client/package-lock.json
+Client/out
+Client/src/test
+
+
+

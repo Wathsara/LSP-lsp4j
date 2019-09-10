@@ -1,0 +1,57 @@
+{
+	"name": "testw",
+	"displayName": "Testw",
+	"description": "good",
+	"version": "0.0.1",
+	"author": "Wathsara Daluwatta",
+	"license": "Apache-2.0",
+	"publisher": "Wathsara",
+	"engines": {
+		"vscode": "^1.37.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:csv"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"languages": [
+			{
+				"id": "csv",
+				"extensions": [
+					".csv"
+				],
+				"aliases": [
+					"CSV",
+					"Csv",
+					"csv"
+				]
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile",
+		"test": "node ./out/test/runTest.js",
+		"package": "npm run compile && vsce package",
+		"launch": "code --extensionDevelopmentPath=/home/wathsara/Desktop/Template/Client"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^5.2.6",
+		"@types/node": "^10.12.21",
+		"@types/vscode": "^1.37.0",
+		"glob": "^7.1.4",
+		"mocha": "^6.1.4",
+		"typescript": "^3.3.1",
+		"tslint": "^5.12.1",
+		"vscode-test": "^1.0.2"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^5.2.1"
+	}
+}
