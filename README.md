@@ -19,3 +19,4 @@ const serverOptions: Executable = {
 		args: ["-jar", "Path_to_Project/target/template-languageserver-0.0.1-SNAPSHOT-jar-with-dependencies.jar"]
 	}
 ```
+Then Create a file with .csv format and `press ctrl+space`, You will get The Suggestions.
