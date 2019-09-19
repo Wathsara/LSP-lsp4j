@@ -1,30 +1,54 @@
 package org.eclipsecon.languageserver;
 
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
 
-
 public class TextTextDocumentService implements TextDocumentService {
 
-    public TextTextDocumentService(TextLanguageServer textLanguageServer) {
 
+    public TextTextDocumentService(TextLanguageServer textLanguageServer) {
     }
+    Map<String, String> contentMap = new HashMap<String, String>();
+    String content= "null";
     @Override
-    public CompletableFuture<Either<List<CompletionItem>, CompletionList>>completion(
+    public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(
             CompletionParams completionParams) {
+
         List<CompletionItem> completionItems = new ArrayList<>();
-        completionItems.add(new CompletionItem(completionParams.toString()));
-        completionItems.add(new CompletionItem(completionParams.getContext().getTriggerKind().toString()));
-        completionItems.add(new CompletionItem("function functionName()={}"));
-        completionItems.add(new CompletionItem("First World"));
-        completionItems.add(new CompletionItem("Second World"));
-        completionItems.add(new CompletionItem("Third World"));
-        completionItems.add(new CompletionItem("Forth World"));
-        return CompletableFuture.completedFuture(Either.forLeft(completionItems));
+
+        int a = completionParams.getPosition().getLine();
+
+        if (a == 0) {
+            completionItems.add(new CompletionItem());
+            if(contentMap.get(completionParams.getTextDocument().getUri()) != null){
+                completionItems.add(new CompletionItem(contentMap.get(completionParams.getTextDocument().getUri())));
+            }
+            completionItems.add(new CompletionItem("First World"));
+            completionItems.add(new CompletionItem("Second World"));
+            completionItems.add(new CompletionItem("Third World"));
+            completionItems.add(new CompletionItem("Forth World"));
+            completionItems.add(new CompletionItem("Hii World"));
+            return CompletableFuture.completedFuture(Either.forLeft(completionItems));
+        } else {
+            if(contentMap.get(completionParams.getTextDocument().getUri()) != null){
+                completionItems.add(new CompletionItem(contentMap.get(completionParams.getTextDocument().getUri())));
+            }
+            completionItems.add(new CompletionItem("1 World"));
+            completionItems.add(new CompletionItem("2 World"));
+            completionItems.add(new CompletionItem("3 World"));
+            completionItems.add(new CompletionItem("4 World"));
+            completionItems.add(new CompletionItem("5 World"));
+            return CompletableFuture.completedFuture(Either.forLeft(completionItems));
+        }
+
 
     }
 
@@ -47,7 +71,7 @@ public class TextTextDocumentService implements TextDocumentService {
 
     @Override
     public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(TextDocumentPositionParams position) {
-       return null;
+        return null;
     }
 
     @Override
@@ -104,15 +128,59 @@ public class TextTextDocumentService implements TextDocumentService {
     @Override
     public void didOpen(DidOpenTextDocumentParams params) {
 
+        String filePath = params.getTextDocument().getUri();
+        filePath = filePath.substring(7);
+        contentMap.put(filePath, filePath);
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+        String ls = System.getProperty("line.separator");
+        while (true) {
+            try {
+                if (!((line = reader.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stringBuilder.append(line);
+            stringBuilder.append(ls);
+        }
+        // delete the last new line separator
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(stringBuilder.toString() != null){
+            contentMap.put(filePath, stringBuilder.toString());
+        }else{
+            contentMap.put(filePath, "nothing");
+        }
+
+
+        content = "open";
     }
 
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
 
+        content = params.getContentChanges().get(0).getText();
+        if(content != null){
+            contentMap.put(params.getTextDocument().getUri(), content);
+        }else{
+            contentMap.put(params.getTextDocument().getUri(), "nothing");
+        }
+
     }
 
     @Override
     public void didClose(DidCloseTextDocumentParams params) {
+        contentMap.remove(params.getTextDocument().getUri());
     }
 
     @Override

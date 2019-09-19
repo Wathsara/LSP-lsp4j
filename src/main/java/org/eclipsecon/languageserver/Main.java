@@ -2,6 +2,7 @@ package org.eclipsecon.languageserver;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 

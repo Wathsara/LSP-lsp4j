@@ -1,3 +1,5 @@
+package org.adaptive.parser;
+
 import org.antlr.v4.runtime.*;
 
 /**

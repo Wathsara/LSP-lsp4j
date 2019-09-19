@@ -21,6 +21,7 @@ public class TextLanguageServer implements LanguageServer {
 	public TextLanguageServer() {
 		textService = new TextTextDocumentService(this);
 		workspaceService = new TextWorkspaceService();
+
 	}
 	
 	public CompletableFuture<InitializeResult> initialize(InitializeParams params) {

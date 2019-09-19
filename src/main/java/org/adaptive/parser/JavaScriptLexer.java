@@ -1,4 +1,4 @@
-// Generated from /home/wathsara/IdeaProjects/ParserTesting/JavaScriptLexer.g4 by ANTLR 4.7.2
+package org.adaptive.parser;// Generated from /home/wathsara/IdeaProjects/ParserTesting/JavaScriptLexer.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.ATNDeserializer;
