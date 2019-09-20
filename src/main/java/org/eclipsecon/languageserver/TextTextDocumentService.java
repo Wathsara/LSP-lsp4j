@@ -7,9 +7,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+
+import org.adaptive.parser.JavaScriptErrorListner;
+import org.adaptive.parser.ParserT;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
+
+import javax.script.ScriptException;
 
 public class TextTextDocumentService implements TextDocumentService {
 
@@ -25,12 +30,23 @@ public class TextTextDocumentService implements TextDocumentService {
         List<CompletionItem> completionItems = new ArrayList<>();
 
         int a = completionParams.getPosition().getLine();
+        String parse = "nu";
+        String errors = "null";
+        if(contentMap.get(completionParams.getTextDocument().getUri()) != null){
+            ParserT parserT = new ParserT();
+            JavaScriptErrorListner javaScriptErrorListner = new JavaScriptErrorListner();
 
-        if (a == 0) {
-            completionItems.add(new CompletionItem());
-            if(contentMap.get(completionParams.getTextDocument().getUri()) != null){
-                completionItems.add(new CompletionItem(contentMap.get(completionParams.getTextDocument().getUri())));
+            try {
+                parse =  parserT.generateParseTree(contentMap.get(completionParams.getTextDocument().getUri()));
+                errors = javaScriptErrorListner.getRecognizer().toString();
+            } catch (ScriptException e) {
+                e.printStackTrace();
             }
+
+        }
+        if (a == 0) {
+            completionItems.add(new CompletionItem(parse));
+            completionItems.add(new CompletionItem(errors));
             completionItems.add(new CompletionItem("First World"));
             completionItems.add(new CompletionItem("Second World"));
             completionItems.add(new CompletionItem("Third World"));
@@ -38,9 +54,9 @@ public class TextTextDocumentService implements TextDocumentService {
             completionItems.add(new CompletionItem("Hii World"));
             return CompletableFuture.completedFuture(Either.forLeft(completionItems));
         } else {
-            if(contentMap.get(completionParams.getTextDocument().getUri()) != null){
-                completionItems.add(new CompletionItem(contentMap.get(completionParams.getTextDocument().getUri())));
-            }
+            completionItems.add(new CompletionItem(String.valueOf(a+1)));
+            completionItems.add(new CompletionItem(parse));
+            completionItems.add(new CompletionItem(errors));
             completionItems.add(new CompletionItem("1 World"));
             completionItems.add(new CompletionItem("2 World"));
             completionItems.add(new CompletionItem("3 World"));
@@ -158,12 +174,8 @@ public class TextTextDocumentService implements TextDocumentService {
         }
         if(stringBuilder.toString() != null){
             contentMap.put(filePath, stringBuilder.toString());
-        }else{
-            contentMap.put(filePath, "nothing");
         }
 
-
-        content = "open";
     }
 
     @Override
@@ -172,10 +184,7 @@ public class TextTextDocumentService implements TextDocumentService {
         content = params.getContentChanges().get(0).getText();
         if(content != null){
             contentMap.put(params.getTextDocument().getUri(), content);
-        }else{
-            contentMap.put(params.getTextDocument().getUri(), "nothing");
         }
-
     }
 
     @Override

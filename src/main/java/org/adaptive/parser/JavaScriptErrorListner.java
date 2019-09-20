@@ -5,13 +5,25 @@ import org.antlr.v4.runtime.misc.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class JavaScriptErrorListner extends BaseErrorListener {
     private final List<SyntaxError> syntaxErrors = new ArrayList<>();
+    private static HashMap<int[], String> recognizer = new HashMap<int[], String>();
 
-    JavaScriptErrorListner()
+    public HashMap<int[], String> getRecognizer() {
+        return recognizer;
+    }
+
+    public void setRecognizer() {
+        this.recognizer= new HashMap<int[], String>();
+    }
+
+
+    public JavaScriptErrorListner()
     {
+        this.setRecognizer();
     }
 
     List<SyntaxError> getSyntaxErrors()
@@ -25,12 +37,9 @@ public class JavaScriptErrorListner extends BaseErrorListener {
                             int line, int charPositionInLine,
                             String msg, RecognitionException e)
     {
-//        System.out.println(((Parser)recognizer).getRuleInvocationStack());
+
         List<String>stack=((Parser)recognizer).getRuleInvocationStack();
-        System.err.println("Rule:"+stack.get(0));
-        Collections.reverse(stack);
-        System.err.println("RuleStack:"+stack);
-        System.err.println("line"+line+":"+charPositionInLine+"at"+offendingSymbol+":"+msg);
+        this.recognizer.put((new int[]{line,charPositionInLine}),stack.get(0));
         underlineError(recognizer,(Token)offendingSymbol,line,charPositionInLine);
     }
 

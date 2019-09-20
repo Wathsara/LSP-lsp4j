@@ -10,6 +10,9 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.json.JSONException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.script.ScriptException;
 import java.util.ArrayList;
@@ -66,12 +69,13 @@ public class ParserT {
             javaScriptParser.removeErrorListeners();
             javaScriptParser.addErrorListener(new JavaScriptErrorListner());
             ParseTree parseTree = javaScriptParser.program();
-            return toJson(parseTree,true);
+           return toJson(parseTree,true);
 
         }catch (Exception e){
            System.out.println(e);
 
         }
+
         return code;
     }
 }
